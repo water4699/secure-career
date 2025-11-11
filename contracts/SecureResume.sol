@@ -34,6 +34,9 @@ contract SecureResume is SepoliaConfig {
     // HR addresses with evaluation permissions
     mapping(address => bool) public hrAddresses;
 
+    // Total number of resumes submitted
+    uint256 private _totalResumes;
+
     // Events
     event ResumeSubmitted(address indexed user);
     event ResumeUpdated(address indexed user);
@@ -72,6 +75,9 @@ contract SecureResume is SepoliaConfig {
         resume.createdAt = uint64(block.timestamp);
         resume.updatedAt = uint64(block.timestamp);
         resume.exists = true;
+
+        // Increment total resumes counter for new submissions
+        _totalResumes++;
 
         // Store skills in fixed slots
         for (uint256 i = 0; i < skillNames.length; i++) {
@@ -315,8 +321,6 @@ contract SecureResume is SepoliaConfig {
 
     /// @notice Get contract statistics
     function getStats() external view returns (uint256 totalResumes) {
-        // This is a simplified implementation
-        // In a real contract, you might track total resumes differently
-        return 0; // Placeholder
+        return _totalResumes;
     }
 }
