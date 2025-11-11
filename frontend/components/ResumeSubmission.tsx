@@ -147,7 +147,24 @@ export const ResumeSubmission = () => {
     } catch (error) {
       console.error("Submission error:", error);
       setIsEncrypting(false);
-      setMessage(`❌ Failed to submit resume: ${error instanceof Error ? error.message : 'Unknown error'}`);
+
+      let errorMessage = "Unknown error occurred";
+
+      if (error instanceof Error) {
+        if (error.message.includes("User rejected")) {
+          errorMessage = "Transaction was cancelled by user";
+        } else if (error.message.includes("insufficient funds")) {
+          errorMessage = "Insufficient funds for transaction fees";
+        } else if (error.message.includes("network")) {
+          errorMessage = "Network error - please check your connection";
+        } else if (error.message.includes("FHE")) {
+          errorMessage = "FHE encryption error - please try again";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      setMessage(`❌ Failed to submit resume: ${errorMessage}`);
     } finally {
       setIsSubmitting(false);
     }
