@@ -274,4 +274,67 @@ describe("SecureResume", function () {
         )
     ).to.be.revertedWith("Skill arrays length mismatch");
   });
+
+  it("should track total resume count correctly", async function () {
+    // Initially should be 0
+    expect(await secureResumeContract.getStats()).to.equal(0);
+
+    // Alice submits resume
+    const aliceSkills = await fhevm
+      .createEncryptedInput(secureResumeContractAddress, signers.alice.address)
+      .add32(8)
+      .encrypt();
+
+    await secureResumeContract
+      .connect(signers.alice)
+      .submitResume(
+        "Alice",
+        "Education",
+        "Experience",
+        ["Skill"],
+        aliceSkills.handles,
+        aliceSkills.inputProof
+      );
+
+    expect(await secureResumeContract.getStats()).to.equal(1);
+
+    // Bob submits resume
+    const bobSkills = await fhevm
+      .createEncryptedInput(secureResumeContractAddress, signers.bob.address)
+      .add32(7)
+      .encrypt();
+
+    await secureResumeContract
+      .connect(signers.bob)
+      .submitResume(
+        "Bob",
+        "Education",
+        "Experience",
+        ["Skill"],
+        bobSkills.handles,
+        bobSkills.inputProof
+      );
+
+    expect(await secureResumeContract.getStats()).to.equal(2);
+
+    // Alice updates resume (should not increment counter)
+    const aliceUpdatedSkills = await fhevm
+      .createEncryptedInput(secureResumeContractAddress, signers.alice.address)
+      .add32(9)
+      .encrypt();
+
+    await secureResumeContract
+      .connect(signers.alice)
+      .updateResume(
+        "Alice Updated",
+        "Updated Education",
+        "Updated Experience",
+        ["Updated Skill"],
+        aliceUpdatedSkills.handles,
+        aliceUpdatedSkills.inputProof
+      );
+
+    // Counter should still be 2
+    expect(await secureResumeContract.getStats()).to.equal(2);
+  });
 });
