@@ -64,6 +64,20 @@ export const ResumeSubmission = () => {
       return;
     }
 
+    // Check for duplicate skill names
+    const skillNames = skills.map(skill => skill.name.trim().toLowerCase());
+    const uniqueSkillNames = new Set(skillNames);
+    if (uniqueSkillNames.size !== skillNames.length) {
+      setMessage("Skill names must be unique");
+      return;
+    }
+
+    // Validate skill levels are reasonable
+    if (skills.some(skill => skill.level < 1 || skill.level > 10)) {
+      setMessage("Skill levels must be between 1 and 10");
+      return;
+    }
+
     if (!fhevmInstance || fhevmStatus !== "ready") {
       setMessage(`FHEVM is not ready. Status: ${fhevmStatus}${fhevmError ? `, Error: ${fhevmError.message}` : ''}`);
       return;
