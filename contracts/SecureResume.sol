@@ -307,16 +307,20 @@ contract SecureResume is SepoliaConfig {
     /// @notice Authorize an HR address
     /// @param hr HR address to authorize
     function authorizeHR(address hr) external {
+        require(hr != address(0), "Invalid HR address");
+        require(!hrAddresses[hr], "HR already authorized");
+
         // For MVP, allow any user to authorize HR (in production, this should be restricted)
         hrAddresses[hr] = true;
-        emit HRAuthorized(hr);
+        emit HRAuthorized(hr, msg.sender);
     }
 
     /// @notice Revoke HR authorization
     /// @param hr HR address to revoke
     function revokeHR(address hr) external {
+        require(hrAddresses[hr], "HR not authorized");
         hrAddresses[hr] = false;
-        emit HRRevoked(hr);
+        emit HRRevoked(hr, msg.sender);
     }
 
     /// @notice Get contract statistics
