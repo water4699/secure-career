@@ -26,6 +26,15 @@ export const ResumeManager = () => {
 
   const [activeTab, setActiveTab] = useState<TabType>("submit");
 
+  // Network status check
+  const getNetworkStatus = () => {
+    if (chainId === 31337) return { status: "local", color: "blue", icon: "🔧" };
+    if (chainId === 11155111) return { status: "sepolia", color: "green", icon: "🌐" };
+    return { status: "unknown", color: "gray", icon: "❓" };
+  };
+
+  const networkInfo = getNetworkStatus();
+
   const buttonClass =
     "inline-flex items-center justify-center rounded-2xl px-6 py-4 font-semibold text-white shadow-lg " +
     "transition-all duration-300 hover:scale-105 active:scale-95 " +
@@ -101,12 +110,9 @@ export const ResumeManager = () => {
             Privacy-preserving resume storage with fully homomorphic encryption
           </p>
           <div className="flex justify-center items-center space-x-3 flex-wrap gap-2">
-            <span className={`px-4 py-2 rounded-full text-sm font-medium shadow-md backdrop-blur-sm ${
-              isLocalNetwork
-                ? 'bg-blue-100/80 text-blue-800'
-                : 'bg-green-100/80 text-green-800'
-            }`}>
-              {isLocalNetwork ? '🔧 Local Hardhat Network' : '🌐 Sepolia Testnet'}
+            <span className={`px-4 py-2 rounded-full text-sm font-medium shadow-md backdrop-blur-sm bg-${networkInfo.color}-100/80 text-${networkInfo.color}-800`}>
+              {networkInfo.icon} {networkInfo.status === "local" ? "Local Hardhat Network" :
+                                 networkInfo.status === "sepolia" ? "Sepolia Testnet" : "Unknown Network"}
             </span>
             <span className="px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full text-sm text-gray-700 font-medium shadow-md">
               Chain ID: {chainId}
