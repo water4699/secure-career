@@ -7,6 +7,14 @@ import { SecureResumeABI } from '@/abi/SecureResumeABI';
 import { SecureResumeAddresses } from '@/abi/SecureResumeAddresses';
 import { useFhevm } from '@/fhevm/useFhevm';
 
+// Common skill suggestions
+const SKILL_SUGGESTIONS = [
+  "JavaScript", "TypeScript", "Python", "Java", "C++", "C#", "Go", "Rust",
+  "React", "Vue.js", "Angular", "Node.js", "Express", "Django", "Spring Boot",
+  "SQL", "MongoDB", "PostgreSQL", "Redis", "Docker", "Kubernetes",
+  "AWS", "Azure", "GCP", "Git", "CI/CD", "Agile", "Scrum"
+];
+
 interface SkillInput {
   name: string;
   level: number;
@@ -277,14 +285,33 @@ export const ResumeSubmission = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Skill Name *
                   </label>
-                  <input
-                    type="text"
-                    value={skill.name}
-                    onChange={(e) => updateSkill(index, "name", e.target.value)}
-                    className="w-full px-4 py-3 border-2 border-blue-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 focus:border-blue-400 transition-all"
-                    placeholder="💻 e.g., JavaScript, React, Python"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={skill.name}
+                      onChange={(e) => updateSkill(index, "name", e.target.value)}
+                      className="w-full px-4 py-3 border-2 border-blue-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 focus:border-blue-400 transition-all"
+                      placeholder="💻 e.g., JavaScript, React, Python"
+                      required
+                    />
+                    {skill.name.length === 0 && (
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 max-h-32 overflow-y-auto">
+                        <div className="p-2 text-xs text-gray-500 font-medium">Popular skills:</div>
+                        <div className="flex flex-wrap gap-1 p-2">
+                          {SKILL_SUGGESTIONS.slice(0, 8).map((suggestion) => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              onClick={() => updateSkill(index, "name", suggestion)}
+                              className="px-2 py-1 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-md transition-colors"
+                            >
+                              {suggestion}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="w-32">
