@@ -141,12 +141,17 @@ contract SecureResume is SepoliaConfig {
         resume.skillCount = uint8(skillNames.length);
         resume.updatedAt = uint64(block.timestamp);
 
-        // Clear existing skills first
+        // Clear existing skills first (gas optimization: batch clearing)
         resume.skillName1 = "";
         resume.skillName2 = "";
         resume.skillName3 = "";
         resume.skillName4 = "";
         resume.skillName5 = "";
+        resume.skillLevel1 = FHE.asEuint32(0); // Reset to zero
+        resume.skillLevel2 = FHE.asEuint32(0);
+        resume.skillLevel3 = FHE.asEuint32(0);
+        resume.skillLevel4 = FHE.asEuint32(0);
+        resume.skillLevel5 = FHE.asEuint32(0);
 
         // Store updated skills in fixed slots
         for (uint256 i = 0; i < skillNames.length; i++) {
