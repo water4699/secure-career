@@ -30,6 +30,7 @@ export const ResumeSubmission = () => {
   const [skills, setSkills] = useState<SkillInput[]>([{ name: "", level: 1 }]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEncrypting, setIsEncrypting] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
   const [message, setMessage] = useState("");
 
   // Get FHEVM instance
@@ -92,8 +93,15 @@ export const ResumeSubmission = () => {
     }
 
     setIsSubmitting(true);
+    setIsValidating(true);
+    setMessage("🔍 Validating form data...");
+
+    // Simulate validation delay for better UX
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    setIsValidating(false);
     setIsEncrypting(true);
-    setMessage("");
+    setMessage("🔐 Encrypting skill levels with FHEVM...");
 
     try {
       if (!window.ethereum) {
@@ -377,7 +385,7 @@ export const ResumeSubmission = () => {
             disabled={isSubmitting || !fhevmInstance || fhevmStatus !== "ready"}
             className={buttonClass}
           >
-            {isEncrypting ? "🔐 Encrypting..." : isSubmitting ? "📤 Submitting..." : "Submit Resume"}
+            {isValidating ? "🔍 Validating..." : isEncrypting ? "🔐 Encrypting..." : isSubmitting ? "📤 Submitting..." : "Submit Resume"}
           </button>
         </div>
 
