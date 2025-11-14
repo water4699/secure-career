@@ -38,10 +38,12 @@ contract SecureResume is SepoliaConfig {
     uint256 private _totalResumes;
 
     // Events
-    event ResumeSubmitted(address indexed user);
-    event ResumeUpdated(address indexed user);
-    event HRAuthorized(address indexed hr);
-    event HRRevoked(address indexed hr);
+    event ResumeSubmitted(address indexed user, uint64 timestamp, uint8 skillCount);
+    event ResumeUpdated(address indexed user, uint64 timestamp);
+    event SkillEvaluated(address indexed candidate, address indexed hr, uint256 skillIndex);
+    event SkillScoreCalculated(address indexed candidate, address indexed hr, uint256[] skillIndices);
+    event HRAuthorized(address indexed hr, address indexed authorizedBy);
+    event HRRevoked(address indexed hr, address indexed revokedBy);
 
     modifier onlyHR() {
         require(hrAddresses[msg.sender], "Not authorized HR");
@@ -111,7 +113,7 @@ contract SecureResume is SepoliaConfig {
             }
         }
 
-        emit ResumeSubmitted(msg.sender);
+        emit ResumeSubmitted(msg.sender, resume.createdAt, resume.skillCount);
     }
 
     /// @notice Update existing resume
@@ -185,7 +187,7 @@ contract SecureResume is SepoliaConfig {
             }
         }
 
-        emit ResumeUpdated(msg.sender);
+        emit ResumeUpdated(msg.sender, resume.updatedAt);
     }
 
     /// @notice Get resume basic info (plaintext data)
