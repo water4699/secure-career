@@ -67,7 +67,10 @@ contract SecureResume is SepoliaConfig {
     ) external {
         require(skillNames.length == skillLevelsExt.length, "Skill arrays length mismatch");
         require(skillNames.length > 0 && skillNames.length <= 5, "Must have 1-5 skills");
-        require(bytes(name).length > 0, "Name cannot be empty");
+        require(bytes(name).length > 0 && bytes(name).length <= 100, "Name must be 1-100 characters");
+        require(bytes(education).length <= 1000, "Education text too long");
+        require(bytes(workExperience).length <= 1000, "Work experience text too long");
+        require(!_resumes[msg.sender].exists, "Resume already exists - use updateResume instead");
 
         Resume storage resume = _resumes[msg.sender];
         resume.name = name;
