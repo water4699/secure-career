@@ -55,6 +55,27 @@ export const ResumeSubmission = () => {
     setSkills(updatedSkills);
   };
 
+  // Keyboard shortcuts
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      switch (e.key) {
+        case 'Enter':
+          e.preventDefault();
+          const form = e.currentTarget.closest('form');
+          if (form && !isSubmitting) {
+            const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+            submitButton?.click();
+          }
+          break;
+        case '+':
+        case '=':
+          e.preventDefault();
+          addSkill();
+          break;
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -215,7 +236,7 @@ export const ResumeSubmission = () => {
         </h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-6" role="form" aria-label="Resume submission form">
         {/* Basic Information */}
         <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl p-6 shadow-md">
           <div className="flex items-center space-x-2 mb-5">
