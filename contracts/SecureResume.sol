@@ -7,6 +7,8 @@ import {SepoliaConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 /// @title Secure Resume Storage Contract
 /// @notice Stores encrypted resume data with FHE-protected skill evaluation
 /// @dev Uses FHEVM to enable encrypted skill matching without decryption
+/// @custom:security This contract uses Fully Homomorphic Encryption (FHE) to protect sensitive skill data
+/// @custom:gas-optimization Consider using a counter for total resumes in production for better gas efficiency
 contract SecureResume is SepoliaConfig {
     struct Resume {
         string name;                    // Can be desensitized (plaintext)
