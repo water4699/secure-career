@@ -228,7 +228,7 @@ export const ResumeSubmission = () => {
     "disabled:opacity-50 disabled:pointer-events-none bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600";
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="flex items-center space-x-3 mb-8">
         <span className="text-4xl">📝</span>
         <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
@@ -309,7 +309,7 @@ export const ResumeSubmission = () => {
 
           <div className="space-y-3">
             {skills.map((skill, index) => (
-              <div key={index} className="flex gap-3 items-end">
+              <div key={index} className="flex flex-col sm:flex-row gap-3 items-end">
                 <div className="flex-1">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Skill Name *
@@ -362,7 +362,7 @@ export const ResumeSubmission = () => {
                   <button
                     type="button"
                     onClick={() => removeSkill(index)}
-                    className="px-3 py-2 text-red-600 hover:text-red-800 font-medium"
+                    className="px-3 py-2 text-red-600 hover:text-red-800 font-medium self-start sm:self-end"
                   >
                     Remove
                   </button>
