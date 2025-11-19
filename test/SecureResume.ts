@@ -337,4 +337,41 @@ describe("SecureResume", function () {
     // Counter should still be 2
     expect(await secureResumeContract.getStats()).to.equal(2);
   });
+
+  it("should reject submissions with invalid input lengths", async function () {
+    const skillLevels = [5];
+    const encryptedSkills = await fhevm
+      .createEncryptedInput(secureResumeContractAddress, signers.alice.address)
+      .add32(skillLevels[0])
+      .encrypt();
+
+    // Test empty name
+    await expect(
+      secureResumeContract
+        .connect(signers.alice)
+        .submitResume(
+          "",
+          "Education",
+          "Experience",
+          ["Skill"],
+          encryptedSkills.handles,
+          encryptedSkills.inputProof
+        )
+    ).to.be.revertedWith("Name must be 1-100 characters");
+
+    // Test name too long
+    const longName = "a".repeat(101);
+    await expect(
+      secureResumeContract
+        .connect(signers.alice)
+        .submitResume(
+          longName,
+          "Education",
+          "Experience",
+          ["Skill"],
+          encryptedSkills.handles,
+          encryptedSkills.inputProof
+        )
+    ).to.be.revertedWith("Name must be 1-100 characters");
+  });
 });
