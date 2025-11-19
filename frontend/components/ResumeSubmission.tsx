@@ -187,7 +187,7 @@ export const ResumeSubmission = () => {
       const receipt = await tx.wait();
       console.log('Transaction confirmed:', receipt);
 
-      setMessage("✅ Resume submitted successfully! Your skills are now stored with privacy-preserving encryption.");
+      setMessage("✅ Resume submitted successfully! Your skills are now stored with privacy-preserving encryption. You can view your resume in the 'View Resume' tab.");
 
       // Clear form
       setName("");
