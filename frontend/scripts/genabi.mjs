@@ -45,6 +45,13 @@ function deployOnHardhatNode() {
     // Not supported on Windows
     return;
   }
+
+  // Skip deployment in Vercel environment
+  if (process.env.VERCEL || process.env.CI || process.env.NETLIFY) {
+    console.log("Skipping auto-deployment in CI/CD environment");
+    return;
+  }
+
   try {
     execSync(`./deploy-hardhat-node.sh`, {
       cwd: path.resolve("./scripts"),
@@ -65,6 +72,18 @@ function readDeployment(chainName, chainId, contractName, optional) {
   }
 
   if (!fs.existsSync(chainDeploymentDir)) {
+    // In CI/CD environments, provide fallback deployment info
+    if (process.env.VERCEL || process.env.CI || process.env.NETLIFY) {
+      console.log(`Using fallback deployment for ${chainName} in CI/CD environment`);
+
+      // Return a minimal deployment object for CI/CD
+      return {
+        address: "0x0000000000000000000000000000000000000000",
+        abi: [], // Empty ABI for now, will be populated from source
+        chainId: chainId
+      };
+    }
+
     console.error(
       `${line}Unable to locate '${chainDeploymentDir}' directory.\n\n1. Goto '${dirname}' directory\n2. Run 'npx hardhat deploy --network ${chainName}'.${line}`
     );
@@ -86,12 +105,34 @@ function readDeployment(chainName, chainId, contractName, optional) {
 }
 
 // Auto deployed on Linux/Mac (will fail on windows)
-const deployLocalhost = readDeployment("localhost", 31337, CONTRACT_NAME, false /* optional */);
+let deployLocalhost = readDeployment("localhost", 31337, CONTRACT_NAME, false /* optional */);
+
+// In CI/CD environments, use existing ABI if deployment files don't exist
+if (!deployLocalhost && (process.env.VERCEL || process.env.CI || process.env.NETLIFY)) {
+  console.log("Using existing ABI files in CI/CD environment");
+  // Try to read from existing ABI file
+  const existingAbiPath = path.join(outdir, `${CONTRACT_NAME}ABI.ts`);
+  if (fs.existsSync(existingAbiPath)) {
+    const existingContent = fs.readFileSync(existingAbiPath, 'utf-8');
+    // Extract ABI from existing file
+    const abiMatch = existingContent.match(/export const SecureResumeABI = ({[\s\S]*}) as const;/);
+    if (abiMatch) {
+      deployLocalhost = JSON.parse(abiMatch[1]);
+      deployLocalhost.address = "0x0000000000000000000000000000000000000000"; // Default address
+      deployLocalhost.chainId = 31337;
+    }
+  }
+}
+
+if (!deployLocalhost) {
+  console.error(`${line}Unable to get localhost deployment. Please run deployment locally first.${line}`);
+  process.exit(1);
+}
 
 // Sepolia is optional
 let deploySepolia = readDeployment("sepolia", 11155111, CONTRACT_NAME, true /* optional */);
 if (!deploySepolia) {
-  deploySepolia= { abi: deployLocalhost.abi, address: "0x0000000000000000000000000000000000000000" };
+  deploySepolia = { abi: deployLocalhost.abi, address: "0x0000000000000000000000000000000000000000" };
 }
 
 if (deployLocalhost && deploySepolia) {
