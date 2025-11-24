@@ -18,6 +18,7 @@
     "genabi": "node ./scripts/genabi.mjs",
     "ishhrunning": "node ./scripts/is-hardhat-node-running.mjs",
     "build": "next build",
+    "vercel-build": "npm run genabi && next build",
     "start": "next start",
     "lint": "next lint"
   },
