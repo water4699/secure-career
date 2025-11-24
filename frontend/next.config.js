@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Set outputFileTracingRoot to silence the lockfile warning
-  outputFileTracingRoot: require('path').join(__dirname, '../../'),
+  // Remove outputFileTracingRoot for Vercel compatibility
+  // outputFileTracingRoot: require('path').join(__dirname, '../../'),
+  output: 'standalone', // Enable standalone output for better Vercel compatibility
   async headers() {
     return [
       {
