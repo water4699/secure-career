@@ -1,0 +1,11 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="120" height="120" rx="16" fill="#1f2937"/>
+  <path d="M30 40h60v40H30z" fill="#3b82f6" stroke="#1e40af" stroke-width="2"/>
+  <path d="M40 50h40v20H40z" fill="#60a5fa" stroke="#2563eb" stroke-width="2"/>
+  <circle cx="50" cy="60" r="4" fill="#ffffff"/>
+  <circle cx="60" cy="60" r="4" fill="#ffffff"/>
+  <circle cx="70" cy="60" r="4" fill="#ffffff"/>
+  <path d="M45 75h30" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+  <text x="60" y="95" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="12" font-weight="bold">SECURE</text>
+  <text x="60" y="108" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="10">CAREER</text>
+</svg>
